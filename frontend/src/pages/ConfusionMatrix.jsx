@@ -493,7 +493,8 @@ export default function ConfusionMatrix() {
 
         <div className="row" style={{ marginTop: 18 }}>
           <Link className="btn btn-ghost" to="/correlation">&larr; Correlation Graph</Link>
-          <Link className="btn btn-primary" to="/anomalies">View Anomaly Records &rarr;</Link>
+          <Link className="btn btn-primary" to="/linear-models">Supervised Linear Models &rarr;</Link>
+          <Link className="btn btn-ghost" to="/anomalies">View Anomaly Records</Link>
           <Link className="btn btn-ghost" to="/patient-assessment">Assess Patient Profile</Link>
         </div>
       </Card>

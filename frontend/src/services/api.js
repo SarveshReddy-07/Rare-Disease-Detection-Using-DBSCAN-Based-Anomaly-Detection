@@ -47,4 +47,6 @@ export const api = {
   anomalies: (q) => request(`/anomalies?${new URLSearchParams(q).toString()}`),
   patientForm: () => request("/patient-form"),
   assessPatient: (values) => request("/assess-patient", json({ values })),
+  linearModelsTargets: () => request("/linear-models/targets"),
+  trainLinearModels: (params) => request("/linear-models/train", json(params)),
 };

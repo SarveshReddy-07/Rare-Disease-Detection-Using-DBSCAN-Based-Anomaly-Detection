@@ -64,7 +64,14 @@ Go to **Upload Dataset**, drag in a CSV (or click **Load DEMO dataset**), then c
 4. The **Dashboard** shows cards, charts, PCA, the anomaly report and a searchable table. Use **Download Results CSV**.
 5. Open **Correlation graph** (right after Dashboard) to inspect the Pearson correlation matrix heatmap, interactive 2D scatter regression plots across any pair of clinical features, and biomarker anomaly correlation rankings.
 6. Open **Confusion matrix** (right after Correlation graph) to evaluate DBSCAN anomaly predictions against ground-truth labels, clinical biomarker criteria, or ensemble consensus benchmarks (calculates Sensitivity, Specificity, Precision, F1-Score, and case-by-case breakdowns).
-7. Open **Assess patient**, enter the dataset-style patient details, then calculate the DBSCAN profile factor. It compares the new profile with the completed model's core patterns; it is a dataset-similarity result, not a medical risk score or diagnosis.
+7. Open **Linear models** (right after Confusion matrix) to apply linear supervised-learning models:
+   - **Continuous targets**: Linear Regression (OLS), Ridge Regression ($L_2$), Lasso Regression ($L_1$), and Elastic Net ($L_1 + L_2$).
+   - **Categorical targets**: Logistic Regression (binary) and Multinomial Logistic Regression (multiclass softmax).
+   - **Deep reasoning**:
+     - **Regularisation**: $L_1$ diamond vs $L_2$ circle constraint geometry, coefficient shrinkage paths, and Lasso automatic feature sparsity.
+     - **Bias-Variance Trade-off**: Interactive curves of training vs test error across penalty strengths ($\alpha$ / $C$), learning curves over sample sizes, and diagnostic classification (High Variance / Overfitting vs Optimal vs High Bias / Underfitting).
+     - **Feature Scaling**: Empirical comparison of models trained *With Scaling* (StandardScaler) vs *Without Scaling* (raw features), highlighting why disparate biomarker units require standardisation.
+8. Open **Assess patient**, enter the dataset-style patient details, then calculate the DBSCAN profile factor. It compares the new profile with the completed model's core patterns; it is a dataset-similarity result, not a medical risk score or diagnosis.
 
 If the backend runs on another address, copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_URL`.
 
@@ -86,6 +93,7 @@ in `backend/api/routes.py`. The demo data is **synthetic** (`backend/make_demo_d
 | PCA (visualisation only), chart data | `ml/visualization.py` |
 | Feature correlation matrix, 2D scatter & biomarker anomaly ranking | `ml/correlation.py: compute_correlation_analysis` |
 | Diagnostic Confusion Matrix & validation metrics | `ml/evaluation.py: compute_confusion_matrix_analysis` |
+| Supervised linear models, regularisation, bias-variance & feature scaling | `ml/linear_models.py: run_linear_regression_suite, run_logistic_regression_suite` |
 
 Label detection is by name **and** value count, and is only a suggestion: you confirm or change every role. The downloaded CSV
 contains the original columns plus `DBSCAN_Cluster`, `Potential_Anomaly`, `Anomaly_Status` and `Anomaly_Score`
@@ -93,7 +101,8 @@ contains the original columns plus `DBSCAN_Cluster`, `Potential_Anomaly`, `Anoma
 
 ## API
 `POST /api/upload`, `POST /api/upload-sample`, `POST /api/analyze`, `POST /api/preprocess`, `GET /api/kdistance`,
-`POST /api/dbscan`, `GET /api/results`, `GET /api/correlation`, `GET /api/confusion-matrix`, `GET /api/anomalies`, `GET /api/visualization`, `GET /api/patient-form`,
+`POST /api/dbscan`, `GET /api/results`, `GET /api/correlation`, `GET /api/confusion-matrix`, `GET /api/linear-models/targets`,
+`POST /api/linear-models/train`, `GET /api/anomalies`, `GET /api/visualization`, `GET /api/patient-form`,
 `POST /api/assess-patient`, `GET /api/download`, `POST /api/reset`.
 The backend keeps one in-memory session (single-user demo).
 

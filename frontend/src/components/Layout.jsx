@@ -9,6 +9,7 @@ const STEPS = [
   { to: "/dashboard", label: "Dashboard", key: "results" },
   { to: "/correlation", label: "Correlation graph", key: "corr" },
   { to: "/confusion-matrix", label: "Confusion matrix", key: "cm" },
+  { to: "/linear-models", label: "Linear models", key: "lm" },
   { to: "/anomalies", label: "Anomaly records", key: "results2" },
   { to: "/patient-assessment", label: "Assess patient", key: "results3" },
 ];
@@ -23,6 +24,7 @@ export default function Layout() {
     results: !!results,
     corr: !!results,
     cm: !!results,
+    lm: !!prep || !!results,
     results2: !!results,
     results3: !!results,
   };

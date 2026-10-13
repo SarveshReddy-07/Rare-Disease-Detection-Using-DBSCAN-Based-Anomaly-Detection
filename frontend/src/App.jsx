@@ -8,6 +8,7 @@ import Config from "./pages/Config.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Correlation from "./pages/Correlation.jsx";
 import ConfusionMatrix from "./pages/ConfusionMatrix.jsx";
+import LinearModels from "./pages/LinearModels.jsx";
 import Anomalies from "./pages/Anomalies.jsx";
 import PatientAssessment from "./pages/PatientAssessment.jsx";
 import About from "./pages/About.jsx";
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/correlation" element={<Correlation />} />
         <Route path="/confusion-matrix" element={<ConfusionMatrix />} />
+        <Route path="/linear-models" element={<LinearModels />} />
         <Route path="/anomalies" element={<Anomalies />} />
         <Route path="/patient-assessment" element={<PatientAssessment />} />
         <Route path="/about" element={<About />} />

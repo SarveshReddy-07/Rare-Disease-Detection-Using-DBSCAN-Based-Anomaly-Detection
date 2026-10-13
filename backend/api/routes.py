@@ -14,6 +14,7 @@ from ml.anomaly_detection import detect_anomalies, generate_statistics, save_res
 from ml.correlation import compute_correlation_analysis
 from ml.dbscan_model import fit_dbscan, select_dbscan_parameters
 from ml.evaluation import compute_confusion_matrix_analysis
+from ml.linear_models import get_available_targets, run_linear_regression_suite, run_logistic_regression_suite
 from ml.preprocessing import clean_dataset, inspect_dataset, load_dataset, preprocess_dataset
 from ml.visualization import generate_pca, generate_visualizations
 
@@ -49,6 +50,17 @@ class DbscanIn(BaseModel):
 class PatientAssessmentIn(BaseModel):
     """Raw feature values entered in the patient-details form."""
     values: Dict[str, Any]
+
+
+class LinearModelsIn(BaseModel):
+    task_type: str = Field("regression", pattern="^(regression|classification)$")
+    target_column: str
+    feature_columns: Optional[List[str]] = None
+    test_size: float = Field(0.25, ge=0.1, le=0.5)
+    alpha: float = Field(1.0, ge=0.0001)
+    C: float = Field(1.0, ge=0.0001)
+    l1_ratio: float = Field(0.5, ge=0.0, le=1.0)
+    apply_scaling: bool = True
 
 
 def _store(df, name, size):
@@ -376,6 +388,43 @@ def anomalies(status: str = Query("all", pattern="^(all|normal|anomaly)$"), sear
     cols = chunk.columns.tolist()
     return {"columns": cols, "rows": chunk.values.tolist(), "total": total, "page": page,
             "page_size": page_size, "pages": max(1, -(-total // page_size))}
+
+
+@router.get("/linear-models/targets")
+def linear_models_targets():
+    _need("df")
+    source_df = S["result"]["df"] if "result" in S else S["df"]
+    pre = S.get("pre")
+    return get_available_targets(df=S["df"], pre=pre, result_df=source_df)
+
+
+@router.post("/linear-models/train")
+def linear_models_train(body: LinearModelsIn):
+    _need("df")
+    source_df = S["result"]["df"] if "result" in S else S["df"]
+    try:
+        if body.task_type == "regression":
+            return run_linear_regression_suite(
+                source_df=source_df,
+                target_col=body.target_column,
+                feature_cols=body.feature_columns,
+                test_size=body.test_size,
+                alpha=body.alpha,
+                l1_ratio=body.l1_ratio,
+                apply_scaling=body.apply_scaling,
+            )
+        else:
+            return run_logistic_regression_suite(
+                source_df=source_df,
+                target_col=body.target_column,
+                feature_cols=body.feature_columns,
+                test_size=body.test_size,
+                C=body.C,
+                l1_ratio=body.l1_ratio,
+                apply_scaling=body.apply_scaling,
+            )
+    except Exception as e:
+        raise HTTPException(422, str(e))
 
 
 @router.get("/download")
